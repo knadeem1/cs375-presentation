@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
+#include <climits>
 
 using namespace std;
 
@@ -22,10 +24,13 @@ int dp(vector<int> arr, int size){
 			s = i+1;
 		}
 	}
+
+	cout<<"START = "<<start<<endl<<"END = "<<end<<endl;
+	return max;
 }
 
 int main(int argc, char * argv[]){
-	if(argc != 3) cout<<"ERROR: wrong input format\n";
+	if(argc != 2) cout<<"ERROR: wrong input format\n";
 	ifstream file(argv[1]);
 	string line;
 	int size;
@@ -41,5 +46,6 @@ int main(int argc, char * argv[]){
 
 	size = arr.size();
 	int max = dp(arr, size);
+	cout<<"SUM IS: "<<max<<endl;
 	return 0;
 }
