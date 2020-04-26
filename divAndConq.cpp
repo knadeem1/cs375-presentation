@@ -15,15 +15,38 @@ using namespace std::chrono;
 
 int max(int a, int b){ return (a>b)? a:b;}
 int max(int a, int b, int c) { return max(max(a,b),c);}
-
+int maxCrossingSum(vector<int> arr, int low, int mid, int high) 
+{ 
+    // Include elements on left of mid. 
+    int sum = 0; 
+    int left_sum = INT_MIN; 
+    for (int i = mid; i >= low; i--) 
+    { 
+        sum = sum + arr[i]; 
+        if (sum > left_sum) 
+          left_sum = sum; 
+    } 
+    // Include elements on right of mid 
+    sum = 0; 
+    int right_sum = INT_MIN; 
+    for (int j = mid+1; j <= high; j++) 
+    { 
+        sum = sum + arr[j]; 
+        if (sum > right_sum) 
+          right_sum = sum; 
+    } 
+    // Return sum of elements on left and right of mid 
+    // returning only left_sum + right_sum will fail for [-2, 1] 
+    return max(left_sum + right_sum, left_sum, right_sum); 
+}
 int sum(vector<int> arr){
 	int arraySum = 0;
-	for(int i = 0; i < arr.size(); i++){
+	/*for(int i = low; i <=high; i++){
 		arraySum += arr.at(i);
-	}/*
+	}*/
 	for(vector<int>::iterator it = arr.begin(); it != arr.end(); ++it){
 		arraySum +=*it;
-	}*/
+	}
 	return arraySum;
 }
 
@@ -34,7 +57,7 @@ vector<int> maxCrossingSubArray(vector<int> &arr, int low, int mid, int high){
 	int sum = 0;
 	int maxLeft;
 	int maxRight;
-	for(int i = mid; i >= low; i--){
+	for(int i = mid; i > low; i--){
 			sum += arr[i];
 			if(sum > leftSum){
 				leftSum = sum;
@@ -42,7 +65,7 @@ vector<int> maxCrossingSubArray(vector<int> &arr, int low, int mid, int high){
 			}
 	}
 	sum = 0;
-	for(int j = mid + 1; j <= high; j++){
+	for(int j = mid + 1; j < high; j++){
 		sum += arr[j];
 		if(sum > rightSum){
 			rightSum = sum;
@@ -77,82 +100,74 @@ vector<int> maxSubArray(vector<int> &arr, int low, int high){
 		leftArr = maxSubArray(arr, low, mid);
 		rightArr = maxSubArray(arr, mid + 1, high);
 		crossArr = maxCrossingSubArray(arr, low, mid, high);
-		leftSum = sum(leftArr);//accumulate(leftSum.begin(), leftSum.end(), 0);
-		rightSum = sum(rightArr);//accumulate(rightSum.begin(), rightSum.end(), 0);
-		crossSum = sum(crossArr);//accumulate(crossSum.begin(), crossSum.end(), 0);
-		//cout << "sums left, right, cross: " << leftSum << ", " << rightSum << ", "
-		//<< crossSum << endl;
-		if(leftSum >= rightSum && leftSum >= crossSum){
-			/*retArr[0] = leftArr[0];
+		leftSum = sum(leftArr);
+		//accumulate(leftSum.begin(), leftSum.end(), 0);
+		rightSum = sum(rightArr);
+		crossSum = maxCrossingSum(arr, low, mid, high);//sum(arr, crossArr[0], crossArr[1]);
+		/*if(leftSum > rightSum && leftSum > crossSum){
+			retArr[0] = leftArr[0];
 			retArr[1] = leftArr[1];
-			retArr[2] = leftArr[2];*/
+			retArr[2] = leftArr[2];
 			//retArr = leftArr;
 			//cout << "roast chicken" << endl;
 			//cout << "left index: " << leftArr[0] << endl;
-			return leftArr;//return retArr;
+			return retArr;//return leftArr;//return retArr;
 		}
-		else if(rightSum >= leftSum && rightSum >= crossSum){
-			/*retArr[0] = rightArr[0];
+		else if(rightSum > leftSum && rightSum > crossSum){
+			retArr[0] = rightArr[0];
 			retArr[1] = rightArr[1];
-			retArr[2] = rightArr[2];*/
+			retArr[2] = rightArr[2];
 			//retArr = rightArr;
 			//cout << "right index: " << rightArr[0] << endl;
 			//cout << "soy sauce crabs" << endl;
-			return rightArr;//return retArr;
+			return retArr;//return rightArr;//return retArr;
 		}
 		else{
-			/*retArr[0] = crossArr[0];
+			retArr[0] = crossArr[0];
 			retArr[1] = crossArr[1];
-			retArr[2] = crossArr[2];*/
+			retArr[2] = crossArr[2];
 			//retArr = crossArr;
 			//cout << "sea urchin" <<endl;
-			return crossArr;//return retArr;
+			return retArr;//return crossArr;//return retArr;
+		}*/
+		if(max(rightSum, leftSum, crossSum) == rightSum){
+			return rightArr;
 		}
+		else if(max(rightSum, leftSum, crossSum) == leftSum){
+			return leftArr;
+		}
+		else return crossArr;
 	}
 }
-
-int maxCrossingSum(vector<int> arr, int l, int m, int h) 
+/*
+int maxCrossingSum(vector<int> arr, int low, int mid, int high) 
 { 
     // Include elements on left of mid. 
     int sum = 0; 
     int left_sum = INT_MIN; 
-    for (int i = m; i >= l; i--) 
+    for (int i = mid; i >= low; i--) 
     { 
         sum = sum + arr[i]; 
         if (sum > left_sum) 
           left_sum = sum; 
     } 
-  
     // Include elements on right of mid 
     sum = 0; 
     int right_sum = INT_MIN; 
-    for (int i = m+1; i <= h; i++) 
+    for (int j = mid+1; j <= high; j++) 
     { 
-        sum = sum + arr[i]; 
+        sum = sum + arr[j]; 
         if (sum > right_sum) 
           right_sum = sum; 
     } 
-	//return max(maxSubArraySum(arr, l, m), 
-        //      maxSubArraySum(arr, m+1, h), 
-        //      maxCrossingSum(arr, l, m, h));
-/*  
-	if(leftSum >= rightSum && leftSum >= crossSum){
-			return maxCrossingSum(arr, l, m);//return retArr;
-		}
-		else if(rightSum > leftSum && rightSum > crossSum){
-			return maxCrossingSum(arr, m+1, h);//return retArr;
-		}
-		else{
-			return maxCrossingSum(arr, l, m, h);//return retArr;
-		}
-	}
-*/
     // Return sum of elements on left and right of mid 
     // returning only left_sum + right_sum will fail for [-2, 1] 
     return max(left_sum + right_sum, left_sum, right_sum); 
-} 
+}*/ 
 int maxSubArraySum(vector<int> arr, int low, int high){
-	if(low == high) return arr.at(low);
+	if(low == high){
+		return arr.at(low);
+	}
 	int mid = (low+high)/2;
 	return max(maxSubArraySum(arr, low, mid),
 				maxSubArraySum(arr, mid + 1, high),
@@ -181,10 +196,6 @@ int main(int argc, char * argv[]){
 	auto duration = duration_cast<nanoseconds>(end-start);
 	int max = maxSubArraySum(arr, 0, n-1);
 	cout<<"MAAAXXXX: "<<max<<endl;
-	//cout << retArr[0] << endl;
-	//cout << retArr[1] << endl;
-	//cout << retArr[2] << endl;
-
 	cout<<"START INDEX = "<<retArr[0]<<", END INDEX = "<<retArr[1]<<endl;
 	cout<<"MAX SUM = "<<retArr[2]<<endl;
 	cout<<"TIME ELAPSED (ns) = "<<duration.count()<<endl;
