@@ -34,16 +34,37 @@ int maxCrossingSum(vector<int> arr, int low, int mid, int high)
         sum = sum + arr[j]; 
         if (sum > right_sum) 
           right_sum = sum; 
-    } 
+    }
+	/*cout << "low: " << low << endl;
+	cout << "mid: " << mid << endl;
+	cout << "high: " << high << endl;*/
     // Return sum of elements on left and right of mid 
     // returning only left_sum + right_sum will fail for [-2, 1] 
     return max(left_sum + right_sum, left_sum, right_sum); 
 }
+
+int maxSubArraySum(vector<int> arr, int low, int high){
+	if(low == high){
+		return arr.at(low);
+	}
+	int mid = (low+high)/2;
+	int leftsum = maxSubArraySum(arr, low, mid);
+	int rightsum = maxSubArraySum(arr, mid + 1, high);
+	int sum3 = maxCrossingSum(arr, low, mid, high);
+	if(max(leftsum, rightsum, sum3) == leftsum){
+		cout << "low: " << low << " mid: " << mid << endl; 
+	}
+	else if(max(leftsum, rightsum, sum3) == rightsum)
+		cout << "mid+1: " << mid+1 << " high: " << high << endl;
+	else
+		cout << "low: " << low << " high: " << high << endl;
+	return max(maxSubArraySum(arr, low, mid),
+				maxSubArraySum(arr, mid + 1, high),
+				maxCrossingSum(arr, low, mid, high));
+}
+
 int sum(vector<int> arr){
 	int arraySum = 0;
-	/*for(int i = low; i <=high; i++){
-		arraySum += arr.at(i);
-	}*/
 	for(vector<int>::iterator it = arr.begin(); it != arr.end(); ++it){
 		arraySum +=*it;
 	}
@@ -101,10 +122,9 @@ vector<int> maxSubArray(vector<int> &arr, int low, int high){
 		rightArr = maxSubArray(arr, mid + 1, high);
 		crossArr = maxCrossingSubArray(arr, low, mid, high);
 		leftSum = sum(leftArr);
-		//accumulate(leftSum.begin(), leftSum.end(), 0);
 		rightSum = sum(rightArr);
-		crossSum = maxCrossingSum(arr, low, mid, high);//sum(arr, crossArr[0], crossArr[1]);
-		/*if(leftSum > rightSum && leftSum > crossSum){
+		crossSum = sum(crossArr);
+		if(leftSum > rightSum && leftSum > crossSum){
 			retArr[0] = leftArr[0];
 			retArr[1] = leftArr[1];
 			retArr[2] = leftArr[2];
@@ -129,51 +149,16 @@ vector<int> maxSubArray(vector<int> &arr, int low, int high){
 			//retArr = crossArr;
 			//cout << "sea urchin" <<endl;
 			return retArr;//return crossArr;//return retArr;
-		}*/
-		if(max(rightSum, leftSum, crossSum) == rightSum){
+		}
+		/*if(max(rightSum, leftSum, crossSum) == rightSum){
 			return rightArr;
 		}
 		else if(max(rightSum, leftSum, crossSum) == leftSum){
 			return leftArr;
 		}
-		else return crossArr;
+		else return crossArr;*/
 	}
 }
-/*
-int maxCrossingSum(vector<int> arr, int low, int mid, int high) 
-{ 
-    // Include elements on left of mid. 
-    int sum = 0; 
-    int left_sum = INT_MIN; 
-    for (int i = mid; i >= low; i--) 
-    { 
-        sum = sum + arr[i]; 
-        if (sum > left_sum) 
-          left_sum = sum; 
-    } 
-    // Include elements on right of mid 
-    sum = 0; 
-    int right_sum = INT_MIN; 
-    for (int j = mid+1; j <= high; j++) 
-    { 
-        sum = sum + arr[j]; 
-        if (sum > right_sum) 
-          right_sum = sum; 
-    } 
-    // Return sum of elements on left and right of mid 
-    // returning only left_sum + right_sum will fail for [-2, 1] 
-    return max(left_sum + right_sum, left_sum, right_sum); 
-}*/ 
-int maxSubArraySum(vector<int> arr, int low, int high){
-	if(low == high){
-		return arr.at(low);
-	}
-	int mid = (low+high)/2;
-	return max(maxSubArraySum(arr, low, mid),
-				maxSubArraySum(arr, mid + 1, high),
-				maxCrossingSum(arr, low, mid, high));
-}
-
 int main(int argc, char * argv[]){
 	vector<int> arr;
 	int val;
@@ -181,17 +166,12 @@ int main(int argc, char * argv[]){
 	ifstream file(argv[1]);
 	while(file >> val){
 		arr.push_back(val);
-	}/*
-	for(int i=0;i<arr.size();i++){
-		cout<<arr.at(i)<<endl;
 	}
-	cout<<"SIZE IS: "<<arr.size()<<endl;
-	*/
 	int maxSum = 0;
 	vector<int> retArr(3);
 	int n = arr.size(); //just the size of the vector
 	auto start = high_resolution_clock::now();
-	retArr = maxSubArray(arr, 0, n-1); // retArr.size() is n
+	retArr = maxSubArray(arr, 1, n);//0, n-1); // retArr.size() is n
 	auto end = high_resolution_clock::now();
 	auto duration = duration_cast<nanoseconds>(end-start);
 	int max = maxSubArraySum(arr, 0, n-1);

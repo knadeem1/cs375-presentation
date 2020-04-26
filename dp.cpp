@@ -49,9 +49,7 @@ int main(int argc, char * argv[]){
 		int a = stoi(line);
 		arr.push_back(a);		
 	}	
-
 	file.close();
-
 	size = arr.size();
 	dp(arr, size);
 	return 0;
