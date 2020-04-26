@@ -3,10 +3,13 @@
 #include <fstream>
 #include <vector>
 #include <climits>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 
-int dp(vector<int> arr, int size){
+void dp(vector<int> arr, int size){
+	auto begin = high_resolution_clock::now();
 	int max = INT_MIN;
 	int current = 0;
 	int start = 0;
@@ -25,8 +28,13 @@ int dp(vector<int> arr, int size){
 		}
 	}
 
-	cout<<"START = "<<start<<endl<<"END = "<<end<<endl;
-	return max;
+	auto stop = high_resolution_clock::now();
+	auto duration = duration_cast<nanoseconds>(stop-begin);
+
+	cout<<"START INDEX = "<<start<<", END INDEX = "<<end<<endl;
+	cout<<"MAX SUM = "<<max<<endl;
+	cout<<"TIME ELAPSED (ns) = "<<duration.count()<<endl;
+	//return max;
 }
 
 int main(int argc, char * argv[]){
@@ -45,7 +53,6 @@ int main(int argc, char * argv[]){
 	file.close();
 
 	size = arr.size();
-	int max = dp(arr, size);
-	cout<<"SUM IS: "<<max<<endl;
+	dp(arr, size);
 	return 0;
 }
