@@ -53,11 +53,11 @@ int maxSubArraySum(vector<int> arr, int low, int high){
 	int sum3 = maxCrossingSum(arr, low, mid, high);
 	if(max(leftsum, rightsum, sum3) == leftsum){
 		cout << "low: " << low << " mid: " << mid << endl; 
-	}
+	}/*
 	else if(max(leftsum, rightsum, sum3) == rightsum)
 		cout << "mid+1: " << mid+1 << " high: " << high << endl;
 	else
-		cout << "low: " << low << " high: " << high << endl;
+		cout << "low: " << low << " high: " << high << endl;*/
 	return max(maxSubArraySum(arr, low, mid),
 				maxSubArraySum(arr, mid + 1, high),
 				maxCrossingSum(arr, low, mid, high));
