@@ -179,15 +179,14 @@ Serves as driver for the divAndConq function. Takes in two input files <inputfil
 It parses the input file to obtain an array of integers(stored in a vector). divAndConq() is then called, passing in this input vector, the start index 1, and its size(number of elements)
 */
 int main(int argc, char * argv[]){
-	vector<int> arr;
-	int val;
-	string line;
-	ifstream file(argv[1]);
-	while(file >> val){
-		arr.push_back(val);
+	vector<int> arr; // array to store interger values
+	int val; // value to store the integer on each line of input file
+	ifstream file(argv[1]); // input file
+	while(file >> val){ // obtains integer from file
+		arr.push_back(val); // pushes integer into vector
 	}
-	int maxSum = 0;
-	vector<int> retArr(3);
+	int maxSum = 0; // initialized max sum to 0
+	vector<int> retArr(3); // initial vector to pass into maxSubArray()
 	int n = arr.size(); //just the size of the vector
 	auto start = high_resolution_clock::now();
 	retArr = maxSubArray(arr, 1, n);//0, n-1); // retArr.size() is n
